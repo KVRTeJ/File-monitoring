@@ -1,8 +1,6 @@
 #ifndef FILEINFO_H
 #define FILEINFO_H
 
-#include <QFileInfo>
-
 #include "iFileInfo.h"
 
 class FileInfo : public IFileInfo {
@@ -10,15 +8,18 @@ public:
     FileInfo(QString path = "");
     ~FileInfo() override = default;
 
-    QString getPath() const override {return m_path;}
-    qint64 getSize() const  override {return m_size;}
+    QString getPath() const override;
+    qint64 getSize() const  override;
 
-    bool isExist() const override {return m_isExist;}
+    bool isExist() const override;
 
-    void setPath(QString path) override {m_path = path;}
+    bool setPath(QString path) override;
+    bool setSize(qint64 size) override;
+
+    bool setExist(bool isExist) override;
 
 private:
-    QString m_path;
+    QString m_path = "";
     qint64 m_size = 0;
     bool m_isExist = false;
 };
