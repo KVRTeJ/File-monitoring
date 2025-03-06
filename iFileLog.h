@@ -4,11 +4,13 @@
 #include <QObject>
 
 class IFileLog : QObject {
-public slots:
+    Q_OBJECT
+public:
     virtual ~IFileLog() = default;
-    void fileExist(qint64 size);
-    void fileChanged(qint64 size);
-    void fileNotExist();
+public slots:
+    virtual void fileExist(const QString &path, qint64 size) = 0;
+    virtual void fileChanged(const QString &path, qint64 size) = 0;
+    virtual void fileNotExist(const QString &path) = 0;
 };
 
 #endif // IFILELOG_H
