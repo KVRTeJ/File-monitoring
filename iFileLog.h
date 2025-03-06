@@ -11,4 +11,4 @@ public slots:
     void fileNotExist();
 };
 
-#endif // ILOG_H
+#endif // IFILELOG_H
