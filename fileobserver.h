@@ -7,14 +7,13 @@
 
 class FileObserver : public IFileObserver {
 public:
-    FileObserver(QString path) {}
+    FileObserver(QString path = "");
     ~FileObserver() override = default;
 
-    bool add(const QString &path) override;
-    bool remove(const QString &path) override;
+    bool add(const QString &path) override {return false;}
+    bool remove(const QString &path) override {return false;}
 
     void run() override;
-
 
 private:
     FileInfo m_file; //TODO: to list
