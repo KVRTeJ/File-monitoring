@@ -5,7 +5,7 @@
 
 class FileInfo : public IFileInfo {
 public:
-    FileInfo(QString path = "", qint64 size = 0, bool isExist = false);
+    FileInfo(const QString &path = "", qint64 size = 0, bool isExist = false);
     ~FileInfo() override = default;
 
     QString getPath() const override {return m_path;}
@@ -13,7 +13,7 @@ public:
 
     bool isExist() const override {return m_isExist;}
 
-    bool setPath(QString path) override;
+    bool setPath(const QString &path) override;
     bool setSize(qint64 size) override;
     bool setExist(bool isExist) override;
 

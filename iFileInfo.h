@@ -12,7 +12,7 @@ public:
 
     virtual bool isExist() const = 0;
 
-    virtual bool setPath(QString path) = 0;
+    virtual bool setPath(const QString &path) = 0;
     virtual bool setSize(qint64 size) = 0;
     virtual bool setExist(bool isExist) = 0;
 };

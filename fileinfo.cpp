@@ -2,7 +2,7 @@
 
 #include "fileinfo.h"
 
-FileInfo::FileInfo(QString path, qint64 size, bool isExist)
+FileInfo::FileInfo(const QString &path, qint64 size, bool isExist)
     : m_path(path)
     , m_size(size)
     , m_isExist(isExist)
@@ -10,7 +10,7 @@ FileInfo::FileInfo(QString path, qint64 size, bool isExist)
 
 }
 
-bool FileInfo::setPath(QString path) {
+bool FileInfo::setPath(const QString &path) {
     if(m_path == path) {
         return false;
     }
