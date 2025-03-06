@@ -3,6 +3,8 @@
 
 #include <QList>
 
+#include <QFileInfo>
+
 #include "fileinfo.h"
 #include "iFileObserver.h"
 #include "iFileLog.h"
@@ -25,6 +27,9 @@ public:
     void fileExist(const QString &path, qint64 size);
     void fileChanged(const QString &path, qint64 size);
     void fileNotExist(const QString &path);
+
+private:
+    void _listLoop(QFileInfo &currentFileInfo);
 
 private:
     QList<FileInfo> m_files;

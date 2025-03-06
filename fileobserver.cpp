@@ -1,8 +1,5 @@
-#include <iostream>
 #include <chrono>
 #include <thread>
-
-#include <QFileInfo>
 
 #include "fileobserver.h"
 
@@ -46,30 +43,26 @@ void FileObserver::run() {
     QFileInfo currentFileInfo;
 
     for(;;) {
-        for(auto it = m_files.begin(); it != m_files.end(); ++it) {
-            currentFileInfo.setFile(it->getPath());
-            //currentFileInfo.refresh();
-
-            it->setExist(currentFileInfo.exists());
-
-            if(it->isExist()) {
-                if(it->setExist(currentFileInfo.exists())) {
-                    it->setSize(0);
-                    std::cout << "filenotexist\n";
-                } else if(it->setSize(currentFileInfo.size())) {
-                    emit fileExist(it->getPath(), it->getSize());
-                } else {
-                    emit fileChanged(it->getPath(), it->getSize());
-                }
-            } else {
-                emit fileNotExist(it->getPath());
-                it->setSize(0);
-                it->setExist(currentFileInfo.exists());
-                //std::cout << "filenotexist\n";
-            }
-
-        }
-
+        _listLoop(currentFileInfo);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+}
+
+void FileObserver::_listLoop(QFileInfo &currentFileInfo) {
+    for(auto it = m_files.begin(); it != m_files.end(); ++it) {
+        currentFileInfo.setFile(it->getPath());
+        it->setExist(currentFileInfo.exists());
+
+        if(it->isExist()) {
+            if(it->setSize(currentFileInfo.size())) {
+                emit fileExist(it->getPath(), it->getSize());
+            } else {
+                emit fileChanged(it->getPath(), it->getSize());
+            }
+        } else {
+            emit fileNotExist(it->getPath());
+            it->setSize(0);
+            it->setExist(currentFileInfo.exists());
+        }
     }
 }
