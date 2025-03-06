@@ -2,20 +2,40 @@
 
 #include "fileinfo.h"
 
-FileInfo::FileInfo(QString path)
+FileInfo::FileInfo(QString path, qint64 size, bool isExist)
     : m_path(path)
+    , m_size(size)
+    , m_isExist(isExist)
 {
 
 }
 
-QString FileInfo::getPath() const {
-    return m_path;
+bool FileInfo::setPath(QString path) {
+    if(m_path == path) {
+        return false;
+    }
+
+    m_path = path;
+
+    return true;
 }
 
-qint64 FileInfo::getSize() const {
-    m_size = QFileInfo::size(m_path);
+bool FileInfo::setSize(qint64 size) {
+    if(m_size == size) {
+        return false;
+    }
+
+    m_size = size;
+
+    return true;
 }
 
-bool FileInfo::isExist() const ;
+bool FileInfo::setExist(bool isExist) {
+    if(m_isExist == isExist) {
+        return false;
+    }
 
-void FileInfo::setPath(QString path) ;
+    m_isExist = isExist;
+
+    return true;
+}
