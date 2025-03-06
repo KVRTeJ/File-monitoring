@@ -14,7 +14,6 @@ public:
 
     virtual bool setPath(QString path) = 0;
     virtual bool setSize(qint64 size) = 0;
-
     virtual bool setExist(bool isExist) = 0;
 };
 
