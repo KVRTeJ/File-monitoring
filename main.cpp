@@ -17,7 +17,8 @@ int main(int argc, char *argv[]) {
     FileObserver foo(&cns);
 
     foo.add(path);
-    //foo.add(path2);
+    foo.add(path2);
+    foo.remove(path2);
 
     foo.run();
 

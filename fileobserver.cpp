@@ -32,6 +32,13 @@ bool FileObserver::add(const QString &path) {
 }
 
 bool FileObserver::remove(const QString &path) {
+    for(auto it = m_files.begin(); it != m_files.end(); ++it) {
+        if(it->getPath() == path) {
+            m_files.erase(it);
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -43,7 +50,7 @@ void FileObserver::run() {
             currentFileInfo.setFile(it->getPath());
             //currentFileInfo.refresh();
 
-            //it->setExist(currentFileInfo.exists());
+            it->setExist(currentFileInfo.exists());
 
             if(it->isExist()) {
                 if(it->setExist(currentFileInfo.exists())) {
