@@ -8,6 +8,7 @@ CONFIG += c++17 cmdline
 
 SOURCES += \
         fileinfo.cpp \
+        fileobserver.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -17,4 +18,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     fileinfo.h \
+    fileobserver.h \
     iFileInfo.h
