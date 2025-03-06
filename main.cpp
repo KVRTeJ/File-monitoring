@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <QCoreApplication>
 
 #include "fileobserver.h"
@@ -12,13 +10,10 @@ int main(int argc, char *argv[]) {
     QString path2 = "C:\\Users\\dmitriy.filimonov\\tmp\\test2.txt";
 
     ConsoleFileLog cns;
-
-    std::cout << "start main" << std::endl;
     FileObserver foo(&cns);
 
     foo.add(path);
     foo.add(path2);
-    foo.remove(path2);
 
     foo.run();
 
