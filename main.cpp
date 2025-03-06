@@ -13,7 +13,6 @@ int main(int argc, char *argv[]) {
     FileObserver& observer = FileObserver::Instance();
     observer.setLogger(&cns);
 
-    FileObserver foo;
     observer.add(path);
     observer.add(path2);
 
