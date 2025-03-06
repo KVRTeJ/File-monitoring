@@ -12,9 +12,9 @@
 class FileObserver : public QObject, public IFileObserver {
     Q_OBJECT
 public:
-    FileObserver(IFileLog *logger = nullptr);
-    ~FileObserver() override = default;
+    static FileObserver& Instance();
 
+    FileObserver(const FileObserver &other) = delete;
     IFileLog* getLogger() const {return m_logger;}
     void setLogger(IFileLog *logger);
 
@@ -23,14 +23,17 @@ public:
 
     void run() override;
 
+    FileObserver& operator = (const FileObserver &other) = delete;
  signals:
     void fileExist(const QString &path, qint64 size);
     void fileChanged(const QString &path, qint64 size);
     void fileNotExist(const QString &path);
 
 private:
-    void _listLoop(QFileInfo &currentFileInfo);
+    FileObserver(IFileLog *logger = nullptr);
+    ~FileObserver() override = default;
 
+    void _listLoop(QFileInfo &currentFileInfo);
 private:
     QList<FileInfo> m_files;
     IFileLog *m_logger = nullptr;

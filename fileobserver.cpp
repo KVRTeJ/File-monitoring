@@ -3,13 +3,20 @@
 
 #include "fileobserver.h"
 
+FileObserver& FileObserver::Instance() {
+    static FileObserver observer;
+    return observer;
+}
+
 FileObserver::FileObserver(IFileLog *logger) {
     setLogger(logger);
 }
 
 void FileObserver::setLogger(IFileLog *logger) {
-    if(!logger)
+    if(!logger) {
         m_logger = nullptr;
+        return;
+    }
 
     m_logger = logger;
     connect(this, SIGNAL(fileExist(QString,qint64)), m_logger, SLOT(fileExist(QString,qint64)));
