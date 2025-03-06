@@ -19,4 +19,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     fileinfo.h \
     fileobserver.h \
-    iFileInfo.h
+    iFileInfo.h \
+    iFileObserver.h
