@@ -4,8 +4,11 @@
 
 int main() {
     QString path = "C:\\Users\\dmitriy.filimonov\\tmp\\test.txt";
-    FileObserver foo(path);
+    QString path2 = "C:\\Users\\dmitriy.filimonov\\tmp\\test2.txt";
+    FileObserver foo;
 
+    foo.add(path);
+    foo.add(path2);
     foo.run();
     return 0;
 }

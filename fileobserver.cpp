@@ -7,33 +7,42 @@
 
 #include "fileobserver.h"
 
-FileObserver::FileObserver(QString path) {
-    m_file.setPath(path);
+FileObserver::FileObserver(const QString &path) {
+    m_files.push_back(FileInfo(path));
 }
 
+bool FileObserver::add(const QString &path) {
+    m_files.push_back(FileInfo(path));
+}
 
+bool FileObserver::remove(const QString &path) {
+    return false;
+}
 
 void FileObserver::run() {
-    QFileInfo currentFileInfo(m_file.getPath());
-    m_file.setExist(currentFileInfo.exists());
-    m_file.setSize(currentFileInfo.size());
+    QFileInfo currentFileInfo;
 
     for(;;) {
-        currentFileInfo.refresh();
+        for(auto it = m_files.begin(); it != m_files.end(); ++it) {
+            currentFileInfo.setFile(it->getPath());
+            it->setExist(currentFileInfo.exists());
+            it->setSize(currentFileInfo.size());
+            currentFileInfo.refresh();
 
-        if(m_file.isExist()) {
-            if(m_file.setExist(currentFileInfo.exists())) {
+            if(it->isExist()) {
+                if(it->setExist(currentFileInfo.exists())) {
 
-            } else if(m_file.setSize(currentFileInfo.size())) {
-                std::cout << "File " << m_file.getPath().toStdString() << " changed size to " << m_file.getSize() << std::endl; //TODO: to signal
+                } else if(it->setSize(currentFileInfo.size())) {
+                    std::cout << "File " << it->getPath().toStdString() << " changed size to " << it->getSize() << std::endl; //TODO: to signal
+                } else {
+                    std::cout << "File " << it->getPath().toStdString() << " exists and it's size is " << it->getSize() << std::endl; //TODO: to signal
+                }
             } else {
-                std::cout << "File " << m_file.getPath().toStdString() << " exists and it's size is " << m_file.getSize() << std::endl; //TODO: to signal
+                std::cout << "File " << it->getPath().toStdString() << " does not exist" << std::endl; //TODO: to signal
+                it->setExist(currentFileInfo.exists());
             }
-        } else {
-            std::cout << "File " << m_file.getPath().toStdString() << " does not exist" << std::endl; //TODO: to signal
-            m_file.setExist(currentFileInfo.exists());
-        }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
     }
 }
