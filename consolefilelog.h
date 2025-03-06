@@ -3,7 +3,7 @@
 
 #include "iFileLog.h"
 
-class ConsoleFileLog :public IFileLog {
+class ConsoleFileLog : public IFileLog {
 public:
     ConsoleFileLog() = default;
     ~ConsoleFileLog() override = default;

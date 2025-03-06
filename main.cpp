@@ -1,14 +1,25 @@
 #include <iostream>
 
-#include "fileobserver.h"
+#include <QCoreApplication>
 
-int main() {
+#include "fileobserver.h"
+#include "consolefilelog.h"
+
+int main(int argc, char *argv[]) {
+    QCoreApplication a(argc, argv);
+
     QString path = "C:\\Users\\dmitriy.filimonov\\tmp\\test.txt";
     QString path2 = "C:\\Users\\dmitriy.filimonov\\tmp\\test2.txt";
-    FileObserver foo;
+
+    ConsoleFileLog cns;
+
+    std::cout << "start main" << std::endl;
+    FileObserver foo(&cns);
 
     foo.add(path);
-    foo.add(path2);
+    //foo.add(path2);
+
     foo.run();
-    return 0;
+
+    return a.exec();
 }

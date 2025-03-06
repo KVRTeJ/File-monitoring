@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-class IFileLog : QObject {
+class IFileLog : public QObject {
     Q_OBJECT
 public:
     virtual ~IFileLog() = default;
