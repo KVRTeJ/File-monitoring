@@ -1,14 +1,11 @@
 #include <iostream>
 
-#include "fileinfo.h"
+#include "fileobserver.h"
 
 int main() {
+    QString path = "C:\\Users\\dmitriy.filimonov\\tmp\\test.txt";
+    FileObserver foo(path);
 
-    FileInfo foo("test");
-
-    std::cout << foo.getPath().toStdString() << std::endl;
-    foo.setPath("test2");
-    std::cout << foo.getPath().toStdString() << std::endl;
-
+    foo.run();
     return 0;
 }
