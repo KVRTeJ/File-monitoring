@@ -20,4 +20,5 @@ HEADERS += \
     fileinfo.h \
     fileobserver.h \
     iFileInfo.h \
+    iFileLog.h \
     iFileObserver.h
