@@ -7,6 +7,7 @@
 
 #include "fileinfo.h"
 #include "iFileObserver.h"
+#include "iRunner.h"
 
 class FileObserver : public QObject, public IFileObserver {
     Q_OBJECT
@@ -17,10 +18,11 @@ public:
     IFileLog* getLogger() const override {return m_logger;}
     void setLogger(IFileLog *logger) override;
 
+    IRunner* getRunner() const {return m_runner;}
+    void setRunner(IRunner *runner);
+
     bool add(const QString &path) override;
     bool remove(const QString &path) override;
-
-    void run() override;
 
     FileObserver& operator = (const FileObserver &other) = delete;
  signals:
@@ -32,10 +34,11 @@ private:
     FileObserver(IFileLog *logger = nullptr);
     ~FileObserver() override = default;
 
-    void _listLoop(QFileInfo &currentFileInfo);
+    void _listLoop();
 private:
     QList<FileInfo> m_files;
     IFileLog *m_logger = nullptr;
+    IRunner *m_runner = nullptr;
 };
 
 #endif // FILEOBSERVER_H

@@ -46,16 +46,19 @@ bool FileObserver::remove(const QString &path) {
     return false;
 }
 
-void FileObserver::run() {
-    QFileInfo currentFileInfo;
-
-    for(;;) {
-        _listLoop(currentFileInfo);
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+void FileObserver::setRunner(IRunner *runner) {
+    if(!runner) {
+        m_runner = nullptr;
+        return;
     }
+
+    m_runner->setLoopFunction([this]() {
+        _listLoop();
+    });
 }
 
-void FileObserver::_listLoop(QFileInfo &currentFileInfo) {
+void FileObserver::_listLoop() {
+    QFileInfo currentFileInfo;
     for(auto it = m_files.begin(); it != m_files.end(); ++it) {
         currentFileInfo.setFile(it->getPath());
         it->setExist(currentFileInfo.exists());

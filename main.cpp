@@ -2,6 +2,7 @@
 
 #include "fileobserver.h"
 #include "consolefilelog.h"
+#include "FileRunner.h"
 
 int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
@@ -10,8 +11,10 @@ int main(int argc, char *argv[]) {
     QString path2 = "C:\\Users\\dmitriy.filimonov\\tmp\\test2.txt";
 
     ConsoleFileLog cns;
+    FileRunner runner;
     FileObserver& observer = FileObserver::Instance();
     observer.setLogger(&cns);
+    observer.setRunner(&runner);
 
     observer.add(path);
     observer.add(path2);
