@@ -94,4 +94,6 @@ private:
  FileObserver(const FileObserver &other) = delete;
  FileObserver& operator = (const FileObserver &other) = delete;
 ```
+<img width="882" alt="Снимок экрана 2025-03-07 в 13 09 28" src="https://github.com/user-attachments/assets/f53bfbb0-b776-42a1-a7b7-253bcf8e5638" />
+
 
