@@ -7,7 +7,6 @@
 
 #include "fileinfo.h"
 #include "iFileObserver.h"
-#include "iFileLog.h"
 
 class FileObserver : public QObject, public IFileObserver {
     Q_OBJECT
@@ -15,8 +14,8 @@ public:
     static FileObserver& Instance();
 
     FileObserver(const FileObserver &other) = delete;
-    IFileLog* getLogger() const {return m_logger;}
-    void setLogger(IFileLog *logger);
+    IFileLog* getLogger() const override {return m_logger;}
+    void setLogger(IFileLog *logger) override;
 
     bool add(const QString &path) override;
     bool remove(const QString &path) override;
