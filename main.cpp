@@ -10,12 +10,13 @@ int main(int argc, char *argv[]) {
     QString path2 = "C:\\Users\\dmitriy.filimonov\\tmp\\test2.txt";
 
     ConsoleFileLog cns;
-    FileObserver foo(&cns);
+    FileObserver& observer = FileObserver::Instance();
+    observer.setLogger(&cns);
 
-    foo.add(path);
-    foo.add(path2);
+    observer.add(path);
+    observer.add(path2);
 
-    foo.run();
+    observer.run();
 
     return a.exec();
 }
