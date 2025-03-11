@@ -1,6 +1,3 @@
-#include <chrono>
-#include <thread>
-
 #include "fileobserver.h"
 
 FileObserver& FileObserver::Instance() {
@@ -46,18 +43,7 @@ bool FileObserver::remove(const QString &path) {
     return false;
 }
 
-void FileObserver::setRunner(IRunner *runner) {
-    if(!runner) {
-        m_runner = nullptr;
-        return;
-    }
-
-    m_runner->setLoopFunction([this]() {
-        _listLoop();
-    });
-}
-
-void FileObserver::_listLoop() {
+void FileObserver::check() {
     QFileInfo currentFileInfo;
     for(auto it = m_files.begin(); it != m_files.end(); ++it) {
         currentFileInfo.setFile(it->getPath());
