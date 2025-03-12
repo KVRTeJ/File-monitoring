@@ -1,4 +1,4 @@
-![Диаграмма без названия drawio-2 drawio-2](https://github.com/user-attachments/assets/e67f343a-5188-466e-95ba-9f29ed94199c)# File-monitoring
+# File-monitoring
 
 ## Постановка задачи
  Написать программу с консольным интерфейсом, которая выполняет слежение за выбранными файлами.
