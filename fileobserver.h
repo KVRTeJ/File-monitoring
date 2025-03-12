@@ -3,8 +3,6 @@
 
 #include <QList>
 
-#include <QFileInfo>
-
 #include "fileinfo.h"
 #include "iFileObserver.h"
 
@@ -20,7 +18,7 @@ public:
     bool add(const QString &path) override;
     bool remove(const QString &path) override;
 
-    void check();
+    void check() override;
 
     FileObserver& operator = (const FileObserver &other) = delete;
  signals:

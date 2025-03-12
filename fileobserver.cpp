@@ -44,21 +44,21 @@ bool FileObserver::remove(const QString &path) {
 }
 
 void FileObserver::check() {
-    QFileInfo currentFileInfo;
     for(auto it = m_files.begin(); it != m_files.end(); ++it) {
-        currentFileInfo.setFile(it->getPath());
-        it->setExist(currentFileInfo.exists());
-
-        if(it->isExist()) {
-            if(it->setSize(currentFileInfo.size())) {
+        if(it->update()) {
+            switch(it->getCondition()) {
+            case Condition::FILE_NOT_EXIST:
+                emit fileNotExist(it->getPath());
+                break;
+            case Condition::FILE_EXIST:
                 emit fileExist(it->getPath(), it->getSize());
-            } else {
+                break;
+            case Condition::FILE_CHANGED:
                 emit fileChanged(it->getPath(), it->getSize());
+                break;
+            default:
+                break;
             }
-        } else {
-            emit fileNotExist(it->getPath());
-            it->setSize(0);
-            it->setExist(currentFileInfo.exists());
         }
     }
 }
