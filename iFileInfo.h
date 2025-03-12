@@ -4,7 +4,6 @@
 #include <QString>
 
 enum Condition : short {
-    NONE = -1,
     FILE_NOT_EXIST = 0,
     FILE_EXIST,
     FILE_CHANGED
