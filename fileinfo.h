@@ -25,7 +25,7 @@ private:
     qint64 m_size = 0;
     Condition m_condition = NONE;
 
-    QFileInfo m_newFileInfo;
+    QFileInfo m_fileInfoCatcher;
 };
 
 #endif // FILEINFO_H

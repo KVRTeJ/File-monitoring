@@ -3,7 +3,7 @@
 FileInfo::FileInfo(const QString &path)
     : m_path(path)
 {
-    m_newFileInfo.setFile(m_path);
+    m_fileInfoCatcher.setFile(m_path);
 }
 
 bool FileInfo::setPath(const QString &path) {
@@ -12,7 +12,7 @@ bool FileInfo::setPath(const QString &path) {
     }
 
     m_path = path;
-    m_newFileInfo.setFile(m_path);
+    m_fileInfoCatcher.setFile(m_path);
 
     update();
 
@@ -24,14 +24,14 @@ bool FileInfo::isExist() const {
 }
 
 bool FileInfo::update() {
-    m_newFileInfo.refresh();
+    m_fileInfoCatcher.refresh();
 
     if(isExist()) {
-        if(m_newFileInfo.exists()) {
-            if(m_size == m_newFileInfo.size())
+        if(m_fileInfoCatcher.exists()) {
+            if(m_size == m_fileInfoCatcher.size())
                 return false;
 
-            m_size = m_newFileInfo.size();
+            m_size = m_fileInfoCatcher.size();
             m_condition = Condition::FILE_CHANGED;
             return true;
         } else {
@@ -39,7 +39,7 @@ bool FileInfo::update() {
             return true;
         }
     } else {
-        if(m_newFileInfo.exists()) {
+        if(m_fileInfoCatcher.exists()) {
             m_condition = Condition::FILE_EXIST;
             return true;
         }
