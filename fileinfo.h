@@ -23,7 +23,7 @@ public:
 private:
     QString m_path = "";
     qint64 m_size = 0;
-    Condition m_condition = NONE;
+    Condition m_condition = FILE_NOT_EXIST;
 
     QFileInfo m_fileInfoCatcher;
 };

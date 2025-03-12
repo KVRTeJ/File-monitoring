@@ -1,5 +1,7 @@
 #include "fileinfo.h"
 
+#include <QDebug>
+
 FileInfo::FileInfo(const QString &path)
     : m_path(path)
 {
@@ -35,11 +37,13 @@ bool FileInfo::update() {
             m_condition = Condition::FILE_CHANGED;
             return true;
         } else {
+            m_size = 0;
             m_condition = Condition::FILE_NOT_EXIST;
             return true;
         }
     } else {
         if(m_fileInfoCatcher.exists()) {
+            m_size = m_fileInfoCatcher.size();
             m_condition = Condition::FILE_EXIST;
             return true;
         }
