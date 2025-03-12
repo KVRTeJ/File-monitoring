@@ -1,4 +1,4 @@
-# File-monitoring
+![Диаграмма без названия drawio-2 drawio-2](https://github.com/user-attachments/assets/e67f343a-5188-466e-95ba-9f29ed94199c)# File-monitoring
 
 ## Постановка задачи
  Написать программу с консольным интерфейсом, которая выполняет слежение за выбранными файлами.
@@ -218,3 +218,8 @@ if (!removed) {
     // Файл не был найден в списке мониторинга
 }
 ```
+
+## UML
+
+![Диаграмма без названия drawio-2-4](https://github.com/user-attachments/assets/8b2ac958-c208-46e7-8624-12c376dad121)
+
