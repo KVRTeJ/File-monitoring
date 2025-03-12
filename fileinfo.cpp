@@ -1,13 +1,11 @@
-#include <iostream>
-
 #include "fileinfo.h"
 
-FileInfo::FileInfo(const QString &path, qint64 size, bool isExist)
-    : m_path(path)
-    , m_size(size)
-    , m_isExist(isExist)
-{
+#include <QDebug>
 
+FileInfo::FileInfo(const QString &path)
+    : m_path(path)
+{
+    m_fileInfoCatcher.setFile(m_path);
 }
 
 bool FileInfo::setPath(const QString &path) {
@@ -16,26 +14,42 @@ bool FileInfo::setPath(const QString &path) {
     }
 
     m_path = path;
+    m_fileInfoCatcher.setFile(m_path);
+
+    update();
 
     return true;
 }
 
-bool FileInfo::setSize(qint64 size) {
-    if(m_size == size) {
-        return false;
-    }
-
-    m_size = size;
-
-    return true;
+bool FileInfo::isExist() const {
+    return (m_condition == Condition::FILE_EXIST || m_condition == Condition::FILE_CHANGED);
 }
 
-bool FileInfo::setExist(bool isExist) {
-    if(m_isExist == isExist) {
+bool FileInfo::update() {
+    m_fileInfoCatcher.refresh();
+
+    if(isExist()) {
+        if(m_fileInfoCatcher.exists()) {
+            if(m_size == m_fileInfoCatcher.size())
+                return false;
+
+            m_size = m_fileInfoCatcher.size();
+            m_condition = Condition::FILE_CHANGED;
+            return true;
+        } else {
+            m_size = 0;
+            m_condition = Condition::FILE_NOT_EXIST;
+            return true;
+        }
+    } else {
+        if(m_fileInfoCatcher.exists()) {
+            m_size = m_fileInfoCatcher.size();
+            m_condition = Condition::FILE_EXIST;
+            return true;
+        }
+
         return false;
     }
 
-    m_isExist = isExist;
-
-    return true;
+    return false;
 }

@@ -3,8 +3,6 @@
 
 #include <QList>
 
-#include <QFileInfo>
-
 #include "fileinfo.h"
 #include "iFileObserver.h"
 
@@ -20,7 +18,7 @@ public:
     bool add(const QString &path) override;
     bool remove(const QString &path) override;
 
-    void run() override;
+    void check() override;
 
     FileObserver& operator = (const FileObserver &other) = delete;
  signals:
@@ -32,7 +30,6 @@ private:
     FileObserver(IFileLog *logger = nullptr);
     ~FileObserver() override = default;
 
-    void _listLoop(QFileInfo &currentFileInfo);
 private:
     QList<FileInfo> m_files;
     IFileLog *m_logger = nullptr;

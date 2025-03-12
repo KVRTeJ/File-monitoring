@@ -1,26 +1,31 @@
 #ifndef FILEINFO_H
 #define FILEINFO_H
 
+#include <QFileInfo>
+
 #include "iFileInfo.h"
 
 class FileInfo : public IFileInfo {
 public:
-    FileInfo(const QString &path = "", qint64 size = 0, bool isExist = false);
+    FileInfo(const QString &path = "");
     ~FileInfo() override = default;
 
     QString getPath() const override {return m_path;}
     qint64 getSize() const  override {return m_size;}
-
-    bool isExist() const override {return m_isExist;}
+    Condition getCondition() const override {return m_condition;}
 
     bool setPath(const QString &path) override;
-    bool setSize(qint64 size) override;
-    bool setExist(bool isExist) override;
+
+    bool isExist() const override;
+
+    bool update() override;
 
 private:
     QString m_path = "";
     qint64 m_size = 0;
-    bool m_isExist = false;
+    Condition m_condition = FILE_NOT_EXIST;
+
+    QFileInfo m_fileInfoCatcher;
 };
 
 #endif // FILEINFO_H
