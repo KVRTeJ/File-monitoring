@@ -6,6 +6,7 @@ FileInfo::FileInfo(const QString &path)
     : m_path(path)
 {
     m_fileInfoCatcher.setFile(m_path);
+    m_size = -1;
 }
 
 bool FileInfo::setPath(const QString &path) {
@@ -43,8 +44,15 @@ bool FileInfo::update() {
         }
     } else {
         if(m_fileInfoCatcher.exists()) {
+
             m_size = m_fileInfoCatcher.size();
             m_condition = Condition::FILE_EXIST;
+            return true;
+        }
+
+        if(m_size == -1) {
+            m_size = 0;
+            m_condition = Condition::FILE_NOT_EXIST;
             return true;
         }
 
