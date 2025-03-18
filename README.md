@@ -221,5 +221,8 @@ if (!removed) {
 
 ## UML
 
-![Диаграмма без названия drawio-2-4](https://github.com/user-attachments/assets/8b2ac958-c208-46e7-8624-12c376dad121)
+<img width="880" alt="Снимок экрана 2025-03-19 в 02 15 06" src="https://github.com/user-attachments/assets/31391452-74a9-4570-a8c8-ae71806454bc" />
+
+
+
 
