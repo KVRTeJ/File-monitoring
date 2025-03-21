@@ -221,7 +221,8 @@ if (!removed) {
 
 ## UML
 
-<img width="880" alt="Снимок экрана 2025-03-19 в 02 15 06" src="https://github.com/user-attachments/assets/31391452-74a9-4570-a8c8-ae71806454bc" />
+<img width="852" alt="Снимок экрана 2025-03-21 в 13 21 24" src="https://github.com/user-attachments/assets/a89a1afe-d587-4b13-b6eb-eda38db3ad1e" />
+
 
 
 
