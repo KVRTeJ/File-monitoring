@@ -1,34 +1,35 @@
 # File-monitoring
 
-## Постановка задачи
- Написать программу с консольным интерфейсом, которая выполняет слежение за выбранными файлами.
+## Task Definition
 
-Ограничимся  двумя характеристиками за изменениями которых выполняется слежение  :
+Write a program with a console interface that monitors selected files.
 
-> 1. Существование файла;
-> 2. Размер файла.
+We will limit the monitoring to two attributes:
 
-Программа будет выводить на консоль уведомление о произошедших изменениях в файле.
+> 1. File existence;  
+> 2. File size.
 
-Существует несколько ситуаций для наблюдаемого файла:
+The program will output notifications on the console whenever changes occur in a file.
 
-> 1. Файл существует , файл не  пустой - на экран выводится факт  существования файла и его  размер.
-> 2. Файл существует, файл был изменен - на экран выводится факт существования файла, сообщение о том что файл был изменен и его размер.  
-> 3. Файл не существует - на экран выводится информация о том что файл не существует.
+There are several scenarios for a monitored file:
 
-При возникновении изменения состояния наблюдаемого файла ( возникновение события ), необходимо выводить на экран соответствующее сообщение.
+> 1. The file exists and is not empty – the console displays that the file exists and shows its size.  
+> 2. The file exists and has been modified – the console displays that the file exists, shows a message indicating that the file was changed, and shows its size.  
+> 3. The file does not exist – the console displays a message that the file does not exist.
 
-В данной реализации используем механизм сигнально-слотового соединения для обеспечения обработки события изменения наблюдаемого файла.
+Whenever there is a change in the state of a monitored file (an event occurs), a corresponding message must be displayed on the screen.
 
-## Предлагаемое решение.
+In this implementation, a signal-slot mechanism is used to handle events corresponding to file changes.
 
-Для решения данной задачи была использована сигнально-слотовая связь, между двумя основными сущностями проекта: 
- 1. FileObserver, который испускает сигналы, при изменении состояния файла/файлов
- 2. IFileLog(интерфейс), который имеет слоты - они и будут принимать сигналы. 
+## Proposed Solution
 
-## Сигналы и слоты
+To address this task, a signal-slot connection is employed between the two main entities of the project:  
+1. **FileObserver**, which emits signals when the state of a file (or files) changes.  
+2. **IFileLog (interface)**, which provides slots that will receive the signals.
 
-*Сигналы в FileObserver*
+## Signals and Slots
+
+*Signals in FileObserver*
 ```cpp
 signals:
     void fileExist(const QString &path, qint64 size);
@@ -36,7 +37,7 @@ signals:
     void fileNotExist(const QString &path);
 ```
 
-*Слоты в IFileLog*
+*Slots in IFileLog*
 ```cpp
 public slots:
     virtual void fileExist(const QString &path, qint64 size) = 0;
@@ -44,8 +45,7 @@ public slots:
     virtual void fileNotExist(const QString &path) = 0;
 ```
 
-Сигнально-слотовая связь настраивается в классе FileObserver, в методе setLogger(IFileLog*). 
-При этом заранее проверяется, не передан ли нулевой указатель IFileLog. В этом случае сигналы и слоты связываться не будут. 
+The signal-slot connection is set up in the `FileObserver` class within the `setLogger(IFileLog*)` method. Before establishing the connections, the code checks whether a null pointer was passed for IFileLog. If so, signals and slots will not be connected.
 ```cpp
 void FileObserver::setLogger(IFileLog *logger) {
     if(!logger) {
@@ -61,47 +61,45 @@ void FileObserver::setLogger(IFileLog *logger) {
 }
 ```
 
-## Консольный интерфейс
+## Console Interface
 
-В задаче было условие написать программу с консольным интерфейсом, поэтому был создан порожденный класс от IFileLog - ConsoleFileLog, он и отвечает за логирование изменений файла/файлов в консоль.
+Because the task required a console interface, a class derived from IFileLog — **ConsoleFileLog** — was created. This class handles logging file changes to the console.
 
-*Пример реализации логирования в консоль*
+*Example implementation of console logging*
 ```cpp
 void ConsoleFileLog::fileExist(const QString &path, const qint64 size) {
     std::cout << "File " << path.toStdString() << " changed size to " << size << std::endl;
 }
 ```
 
-## Паттерны проектирования
+## Design Patterns
 
-Был реализован пораждающий паттерн проектирования Singleton(одиночка) для класса FileObserver, реализация данного паттерна находится во ветвлении от develop - в ветке addingSingleton. Одиночка использован для гарантии того, что у FileObserver будет только один экземпляр, который будет доступен *по ссылке* через static метод класса Instance(). В этом методе используется "ленивая" инициализация объекта типа FileObserver. 
+A creational design pattern, **Singleton**, has been implemented for the FileObserver class. The implementation of this pattern resides on a branch derived from `develop` — in the branch `addingSingleton`. The Singleton is used to ensure that there is only one instance of FileObserver, which can be accessed *by reference* through the static `Instance()` method. This method employs "lazy" initialization for the FileObserver object.
 ```cpp
 FileObserver& FileObserver::Instance() {
     static FileObserver observer;
     return observer;
 }
 ```
-Итак, у нас есть метод для полчения ссылки на экземпляр класса, теперь нужно запретить создание новых объектов, для этого конструктор(по умолчанию, с аргументом) и деструктор были вынесены в private. 
+Thus, we have a method to retrieve a reference to the class instance, and now we need to prevent the creation of new objects. To achieve this, the default constructor (as well as the constructor with arguments) and the destructor have been declared as private.
 ```cpp
 private:
     FileObserver(IFileLog *logger = nullptr);
     ~FileObserver() override = default;
 ```
-
-Также удалены способы копирования(конструктор копирования, оператор присваивания), это сделано через оператор delete, который запрещает любое копирование объектов типа FileObserver.
-
+Additionally, copy operations (copy constructor and assignment operator) have been deleted using the `delete` operator to forbid any copying of FileObserver objects.
 ```cpp
- FileObserver(const FileObserver &other) = delete;
- FileObserver& operator = (const FileObserver &other) = delete;
+FileObserver(const FileObserver &other) = delete;
+FileObserver& operator = (const FileObserver &other) = delete;
 ```
 
-## Тестирование
+## Testing
 
-В рамках тестирования функциональности программы были проведены следующие проверки:
+The following tests were conducted to verify the functionality of the program:
 
-### 1. Мониторинг одного файла
+### 1. Monitoring a Single File
 
-Проверено базовое отслеживание состояния одиночного файла. FileObserver корректно определяет существование, изменение и отсутствие файла.
+Basic monitoring of a single file has been tested. FileObserver correctly detects the existence, modification, and absence of the file.
 
 ```cpp
 FileObserver& observer = FileObserver::Instance();
@@ -113,9 +111,9 @@ for(;;) {
 }
 ```
 
-### 2. Мониторинг нескольких файлов
+### 2. Monitoring Multiple Files
 
-Система успешно отслеживает несколько файлов одновременно. Сигналы о состоянии файлов генерируются независимо для каждого файла в списке мониторинга.
+The system successfully monitors multiple files concurrently. Signals regarding the state of each file are generated independently for every file in the monitoring list.
 
 ```cpp
 FileObserver& observer = FileObserver::Instance();
@@ -124,106 +122,102 @@ observer.add("usr/temp/data.log");
 observer.add("usr/temp/settings.json");
 ```
 
-### 3. Добавление одинаковых путей файлов
+### 3. Adding Duplicate File Paths
 
-Подтверждено, что FileObserver защищен от добавления дубликатов путей. При попытке добавить уже отслеживаемый путь, метод `add()` вернет `false` и дубликат не добавится в список отслеживаемых файлов.
+It has been confirmed that FileObserver is safeguarded against adding duplicate paths. If you attempt to add a path that is already being monitored, the `add()` method will return `false` and the duplicate will not be added to the monitoring list.
 
 ```cpp
 FileObserver& observer = FileObserver::Instance();
-observer.add("usr/temp/config.txt"); // Вернет true, файл успешно добавлен в отслеживаемые
-observer.add("usr/temp/config.txt"); // Вернет false, дубликат не добавится
+observer.add("usr/temp/config.txt"); // Returns true, file successfully added to monitoring list
+observer.add("usr/temp/config.txt"); // Returns false, duplicate is not added
 ```
 
-Все тесты подтвердили корректную работу основных функций программы в соответствии с ожидаемым поведением.
+All tests verified that the main functions of the program work as expected.
 
-## Инструкция пользователя
+## User Guide
 
-### Базовая настройка
+### Basic Configuration
 
-Настройка мониторинга файлов выполняется в несколько простых шагов:
+Setting up file monitoring is carried out in a few simple steps:
 
-1. Получите экземпляр FileObserver с помощью паттерна Singleton
-2. Установите логгер для обработки событий
-3. Добавьте файлы для мониторинга
-4. Периодически вызывайте метод `check()` для проверки состояния файлов
+1. Obtain the FileObserver instance using the Singleton pattern.
+2. Set a logger to handle the events.
+3. Add the files to be monitored.
+4. Periodically call the `check()` method to verify the state of the files.
 
 ```cpp
-// Получение экземпляра FileObserver
+// Obtaining the FileObserver instance
 FileObserver& observer = FileObserver::Instance();
 
-// Создание и установка логгера
+// Creating and setting the logger
 ConsoleFileLog logger;
 observer.setLogger(&logger);
 
-// Добавление файлов для мониторинга
+// Adding files for monitoring
 observer.add("/path/to/your/file.txt");
 observer.add("/path/to/another/file.log");
 
-// Периодическая проверка файлов
-// Можно использовать таймер или цикл
+// Periodic file checking
+// You can use a timer or a loop
 while (running) {
     observer.check();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 ```
 
-### Интерпретация событий
+### Event Interpretation
 
-При вызове метода `check()` FileObserver проверяет состояние всех отслеживаемых файлов и генерирует соответствующие события:
+When the `check()` method is called, the FileObserver examines the state of all monitored files and generates corresponding events:
 
-- **fileExist** — файл существует и не менялся с момента последней проверки
-- **fileChanged** — файл был изменен с момента последней проверки
-- **fileNotExist** — файл не существует
+- **fileExist** — The file exists and has not changed since the last check.
+- **fileChanged** — The file has been modified since the last check.
+- **fileNotExist** — The file does not exist.
 
-События обрабатываются логгером, который вы установете с помощью метода `setLogger()`. По умолчанию идет `ConsoleFileLog`, который выводит информацию о событиях в консоль.
+These events are processed by the logger, which you set using `setLogger()`. By default, `ConsoleFileLog` outputs the event information to the console.
 
-### Подготовка тестовых файлов
+### Setting Up Test Files
 
-Для тестирования библиотеки вы можете использовать следующие действия:
+To test the library, you can perform the following steps:
 
-1. Создайте текстовый файл по указанному в вашем коде пути
-2. Запустите приложение — вы увидите событие `fileExist`
-3. Измените содержимое файла — будет сгенерировано событие `fileChanged`
-4. Удалите файл — произойдет событие `fileNotExist`
-5. Снова создайте файл — опять появится событие `fileExist`
+1. Create a text file at the path specified in your code.
+2. Run the application — you will see the `fileExist` event.
+3. Modify the contents of the file — the `fileChanged` event will be triggered.
+4. Delete the file — the `fileNotExist` event will occur.
+5. Recreate the file — the `fileExist` event will appear again.
 
-### Настройка частоты проверки
+### Adjusting the Checking Frequency
 
-В примере используется интервал проверки 100 мс, что обеспечивает быструю реакцию на изменения, но может создать дополнительную нагрузку на систему. Для реальных приложений рекомендуется использовать более длительный интервал, например:
+In the example, a 100 ms interval is used for checking, ensuring a rapid response to changes but potentially adding extra system load. For real applications, it is recommended to use a longer interval, for example:
 
 ```cpp
-// Проверка каждую секунду
+// Check every second
 std::this_thread::sleep_for(std::chrono::seconds(1));
 
-// или
+// or
 
-// Проверка каждые 5 секунд для файлов, которые редко меняются
+// Check every 5 seconds for files that change infrequently
 std::this_thread::sleep_for(std::chrono::seconds(5));
 ```
 
-### Управление списком мониторинга
+### Managing the Monitoring List
 
-Можно динамически добавлять и удалять файлы из списка мониторинга:
+Files can be added to or removed from the monitoring list dynamically:
 
 ```cpp
-// Добавление нового файла
+// Adding a new file
 bool success = observer.add("/path/to/new/file.dat");
 if (!success) {
-    // Файл уже находится в списке мониторинга
+    // The file is already in the monitoring list
 }
 
-// Удаление файла из мониторинга
+// Removing a file from monitoring
 bool removed = observer.remove("/path/to/old/file.log");
 if (!removed) {
-    // Файл не был найден в списке мониторинга
+    // The file was not found in the monitoring list
 }
 ```
 
 ## UML
 
-<img width="852" alt="Снимок экрана 2025-03-21 в 13 21 24" src="https://github.com/user-attachments/assets/a89a1afe-d587-4b13-b6eb-eda38db3ad1e" />
-
-
-
-
+<img width="944" alt="Снимок экрана 2025-04-14 в 12 49 09" src="https://github.com/user-attachments/assets/9923eb9c-9750-404e-8636-fae2fc9fcacf" />
 
